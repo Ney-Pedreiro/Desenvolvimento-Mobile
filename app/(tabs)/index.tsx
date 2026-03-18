@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
@@ -13,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/atoms/AppText';
 import { Button } from '@/components/atoms/Button';
 import { ThemedView } from '@/components/themed-view';
+import { TasksProvider, useTasks, Task } from '@/contexts/TasksContext';
 
 const { width } = Dimensions.get('window');
 
@@ -73,10 +75,21 @@ const getTemperatureColor = (temp: number) => {
   return '#dc2626'; // red-600
 };
 
-export default function DashboardScreen() {
+function HomeScreenContent() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [devices] = useState<Device[]>(mockDevices);
+
+  // Task state and hooks
+  const { tasks, addTask, toggleTask, deleteTask, isLoading } = useTasks();
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+
+  const handleAddTask = useCallback(() => {
+    if (newTaskTitle.trim()) {
+      addTask(newTaskTitle.trim());
+      setNewTaskTitle('');
+    }
+  }, [newTaskTitle, addTask]);
 
   return (
     <ThemedView style={styles.container}>
@@ -156,27 +169,72 @@ export default function DashboardScreen() {
                       </AppText>
                     </View>
                   )}
-
-                  <View style={styles.footer}>
-                    {device.temperature > 24 ? (
-                      <View style={styles.trendContainer}>
-                        <Feather name="trending-up" size={14} color="#ef4444" />
-                        <AppText style={styles.trendTextWarning}>Acima do ideal</AppText>
-                      </View>
-                    ) : (
-                      <View style={styles.trendContainer}>
-                        <Feather name="trending-down" size={14} color="#22c55e" />
-                        <AppText style={styles.trendTextSuccess}>Temperatura ideal</AppText>
-                      </View>
-                    )}
-                  </View>
                 </View>
               </View>
             );
           })}
         </View>
+
+        {/* Tasks Section */}
+        <View style={styles.sectionHeader}>
+          <AppText style={styles.headerTitle}>Tarefas de Manutenção</AppText>
+        </View>
+
+        <View style={styles.addTaskContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Nova tarefa..."
+            value={newTaskTitle}
+            onChangeText={setNewTaskTitle}
+          />
+          <TouchableOpacity style={styles.addIconButton} onPress={handleAddTask}>
+            <Feather name="plus" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.tasksList}>
+          {isLoading ? (
+            <AppText>Carregando tarefas...</AppText>
+          ) : tasks.length === 0 ? (
+            <AppText style={styles.emptyText}>Nenhuma tarefa pendente.</AppText>
+          ) : (
+            tasks.map((task) => (
+              <View key={task.id} style={styles.taskItem}>
+                <TouchableOpacity
+                  style={styles.taskCheck}
+                  onPress={() => toggleTask(task.id)}
+                >
+                  <MaterialCommunityIcons
+                    name={task.completed ? "checkbox-marked-circle" : "checkbox-blank-circle-outline"}
+                    size={24}
+                    color={task.completed ? "#22c55e" : "#9ca3af"}
+                  />
+                </TouchableOpacity>
+
+                <AppText style={[
+                  styles.taskTitle,
+                  task.completed && styles.taskCompleted
+                ]}>
+                  {task.title}
+                </AppText>
+
+                <TouchableOpacity onPress={() => deleteTask(task.id)}>
+                  <Feather name="trash-2" size={20} color="#ef4444" />
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
+        </View>
       </ScrollView>
     </ThemedView>
+  );
+}
+
+export default function DashboardScreen() {
+  return (
+    <TasksProvider>
+      <HomeScreenContent />
+    </TasksProvider>
   );
 }
 
@@ -192,6 +250,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionHeader: {
+    marginTop: 32,
     marginBottom: 16,
   },
   headerTitle: {
@@ -220,7 +282,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
-    // Shadow
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -242,7 +303,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   iconWrapper: {
-    backgroundColor: '#dbeafe', // blue-100
+    backgroundColor: '#dbeafe',
     padding: 8,
     borderRadius: 8,
   },
@@ -291,22 +352,56 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#2563eb',
   },
-  footer: {
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#f3f4f6',
+  addTaskContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
   },
-  trendContainer: {
+  input: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  addIconButton: {
+    backgroundColor: '#2563eb',
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tasksList: {
+    gap: 8,
+  },
+  taskItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    backgroundColor: 'white',
+    padding: 12,
+    borderRadius: 8,
+    gap: 12,
   },
-  trendTextWarning: {
-    fontSize: 12,
-    color: '#6b7280',
+  taskCheck: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  trendTextSuccess: {
-    fontSize: 12,
+  taskTitle: {
+    flex: 1,
+    fontSize: 16,
+    color: '#374151',
+  },
+  taskCompleted: {
+    textDecorationLine: 'line-through',
+    color: '#9ca3af',
+  },
+  emptyText: {
     color: '#6b7280',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: 8,
   },
 });
