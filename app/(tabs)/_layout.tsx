@@ -4,12 +4,12 @@ import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAppTheme } from '@/contexts/ThemeContext';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const tint = Colors[colorScheme ?? 'light'].tint;
-  const iconDefault = Colors[colorScheme ?? 'light'].tabIconDefault;
+  const { resolvedTheme } = useAppTheme();
+  const tint = Colors[resolvedTheme].tint;
+  const iconDefault = Colors[resolvedTheme].tabIconDefault;
 
   return (
     <Tabs
@@ -28,25 +28,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="agenda"
+        name="manutencao"
         options={{
-          title: 'Agenda',
-          tabBarIcon: ({ color }) => <MaterialIcons name="calendar-today" size={26} color={color} />,
+          title: 'Manutenção',
+          tabBarIcon: ({ color }) => <MaterialIcons name="build" size={26} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="menu"
+        name="configuracoes"
         options={{
-          title: 'Menu',
-          tabBarIcon: ({ color }) => <MaterialIcons name="menu" size={26} color={color} />,
+          title: 'Configurações',
+          tabBarIcon: ({ color }) => <MaterialIcons name="settings" size={26} color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          href: null,
-        }}
-      />
+      <Tabs.Screen name="agenda" options={{ href: null }} />
+      <Tabs.Screen name="menu" options={{ href: null }} />
+      <Tabs.Screen name="explore" options={{ href: null }} />
     </Tabs>
   );
 }

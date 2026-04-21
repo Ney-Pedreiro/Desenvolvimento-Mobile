@@ -23,7 +23,6 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load tasks on mount
   useEffect(() => {
     async function loadTasks() {
       try {
@@ -40,10 +39,11 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     loadTasks();
   }, []);
 
-  // Save tasks whenever they change
   useEffect(() => {
     if (!isLoading) {
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)).catch((error) => {
+        console.error('Erro ao salvar tarefas:', error);
+      });
     }
   }, [tasks, isLoading]);
 

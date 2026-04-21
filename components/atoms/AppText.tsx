@@ -46,6 +46,5 @@ const styles = StyleSheet.create({
   caption: {
     fontSize: 14,
     lineHeight: 20,
-    opacity: 0.8,
   },
 });
