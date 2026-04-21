@@ -6,7 +6,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -16,8 +16,6 @@ import { AppText } from '@/components/atoms/AppText';
 import { Button } from '@/components/atoms/Button';
 import { InputWithLabel } from '@/components/molecules/InputWithLabel';
 import { useAuth } from '@/contexts/AuthContext';
-
-const { width } = Dimensions.get('window');
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -37,6 +35,7 @@ export default function LoginScreen() {
       router.replace('/(tabs)');
     } catch (error) {
       console.error(error);
+      Alert.alert('Erro', 'Email ou senha inválidos. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -95,7 +94,11 @@ export default function LoginScreen() {
 
               <View style={styles.footer}>
                 <AppText style={styles.footerText}>Não tem uma conta? </AppText>
-                <TouchableOpacity onPress={() => router.push('/register' as any)}>
+                <TouchableOpacity
+                  onPress={() => router.push('/register')}
+                  accessibilityLabel="Ir para a tela de registro"
+                  accessibilityRole="button"
+                >
                   <AppText style={styles.linkText}>Registre-se</AppText>
                 </TouchableOpacity>
               </View>
@@ -110,7 +113,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f7ff', // Fallback for gradient
+    backgroundColor: '#f0f7ff',
   },
   backgroundGradient: {
     position: 'absolute',
@@ -118,8 +121,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: '#f0f7ff', // Using a solid color as a base
-    // In a real app, we'd use LinearGradient here
+    backgroundColor: '#f0f7ff',
   },
   scrollContent: {
     flexGrow: 1,
@@ -133,12 +135,10 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
     alignSelf: 'center',
-    // Shadow for iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    // Elevation for Android
     elevation: 4,
   },
   header: {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   iconContainer: {
-    backgroundColor: '#2563eb', // blue-600
+    backgroundColor: '#2563eb',
     width: 56,
     height: 56,
     borderRadius: 28,

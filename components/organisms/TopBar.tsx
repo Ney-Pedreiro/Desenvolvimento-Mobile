@@ -14,7 +14,6 @@ export type TopBarProps = {
 
 export function TopBar({ onNotificationsPress }: TopBarProps) {
   const insets = useSafeAreaInsets();
-  const textColor = useThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'background');
   const iconColor = useThemeColor({}, 'icon');
 
@@ -36,6 +35,8 @@ export function TopBar({ onNotificationsPress }: TopBarProps) {
         onPress={onNotificationsPress}
         style={styles.iconButton}
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        accessibilityLabel="Notificações"
+        accessibilityRole="button"
       >
         <MaterialIcons name="notifications-none" size={26} color={iconColor} />
       </TouchableOpacity>

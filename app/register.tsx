@@ -6,6 +6,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -28,8 +29,12 @@ export default function RegisterScreen() {
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) return;
 
+    if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As senhas não coincidem.');
+      return;
+    }
+
     setLoading(true);
-    // Mock registration - navigate to dashboard
     setTimeout(() => {
       setLoading(false);
       router.replace('/(tabs)');
@@ -102,7 +107,11 @@ export default function RegisterScreen() {
 
               <View style={styles.footer}>
                 <AppText style={styles.footerText}>Já tem uma conta? </AppText>
-                <TouchableOpacity onPress={() => router.replace('/login')}>
+                <TouchableOpacity
+                  onPress={() => router.replace('/login')}
+                  accessibilityLabel="Ir para a tela de login"
+                  accessibilityRole="button"
+                >
                   <AppText style={styles.linkText}>Entrar</AppText>
                 </TouchableOpacity>
               </View>

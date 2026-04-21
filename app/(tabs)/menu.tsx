@@ -25,7 +25,12 @@ export default function MenuScreen() {
           <AppText variant="body" style={styles.paragraph}>
             Opções e configurações do aplicativo.
           </AppText>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={handleLogout}
+            accessibilityLabel="Sair do aplicativo"
+            accessibilityRole="button"
+          >
             <AppText variant="body" style={styles.logoutText}>
               Sair
             </AppText>
