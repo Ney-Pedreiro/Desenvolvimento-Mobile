@@ -15,10 +15,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/atoms/AppText';
 import { Button } from '@/components/atoms/Button';
 import { InputWithLabel } from '@/components/molecules/InputWithLabel';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { register } = useAuth();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,7 +29,10 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!name || !email || !password || !confirmPassword) return;
+    if (!name || !email || !password || !confirmPassword) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
 
     if (password !== confirmPassword) {
       Alert.alert('Erro', 'As senhas não coincidem.');
@@ -35,10 +40,15 @@ export default function RegisterScreen() {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await register(name, email, password);
       router.replace('/(tabs)');
-    }, 1000);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erro ao registrar';
+      Alert.alert('Erro', message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
