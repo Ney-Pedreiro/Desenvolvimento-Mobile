@@ -2,6 +2,8 @@ import 'dotenv/config.js';
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
+import deviceRoutes from './routes/devices.js';
+import taskRoutes from './routes/tasks.js';
 import { errorMiddleware } from './middlewares/error.js';
 
 const app = express();
@@ -24,6 +26,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/devices', deviceRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Error handling
 app.use(errorMiddleware);
