@@ -8,6 +8,7 @@ generator client {
 // Datasource: use DATABASE_URL (Postgres em produção)
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
