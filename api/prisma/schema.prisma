@@ -5,10 +5,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Datasource: use DATABASE_URL (Postgres em produção)
+// Datasource: configured via prisma.config.ts
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
