@@ -174,3 +174,36 @@ api/
 
 - [DATABASE.md](./DATABASE.md) - Guia completo do banco de dados
 - [TESTING.md](./TESTING.md) - Como testar os endpoints
+
+## 🚢 Deploy no Railway
+
+1. No Railway, crie um novo projeto ou entre no projeto existente.
+2. Adicione um plugin Postgres (PostgreSQL) — isso provisiona o banco e fornece uma `DATABASE_URL`.
+3. Conecte o repositório Git do projeto ao serviço do Railway (Settings → Deployments).
+4. Em `Environment Variables` do serviço, adicione `DATABASE_URL` com o valor fornecido pelo plugin Postgres.
+5. Configure os comandos de build/start no Railway (Project → Services → Settings):
+
+  - Build Command:
+
+  ```bash
+  npm ci
+  npm run deploy:prod
+  ```
+
+  - Start Command:
+
+  ```bash
+  npm start
+  ```
+
+6. Após deploy, execute os comandos de migração/seed se necessário (pode usar o Railway Shell):
+
+```bash
+npx prisma generate
+npx prisma migrate deploy
+npm run db:seed
+```
+
+7. Verifique os logs e os endpoints no painel do Railway.
+
+Observação: em desenvolvimento local você pode continuar usando SQLite; em produção use a `DATABASE_URL` do Railway.
