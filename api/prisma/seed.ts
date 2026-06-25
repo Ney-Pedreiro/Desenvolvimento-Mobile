@@ -1,8 +1,10 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { hashPassword } from '../src/utils/password.js';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('🌱 Seedando banco de dados...');
