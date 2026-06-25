@@ -19,7 +19,8 @@ CREATE TABLE "Device" (
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    CONSTRAINT "Device_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Device_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "Device_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "Task" (
@@ -29,15 +30,10 @@ CREATE TABLE "Task" (
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Task_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "Task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE INDEX "Device_userId_idx" ON "Device"("userId");
 CREATE INDEX "Task_userId_idx" ON "Task"("userId");
-
-ALTER TABLE "Device" ADD CONSTRAINT "Device_userId_fkey" 
-    FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "Task" ADD CONSTRAINT "Task_userId_fkey" 
-    FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
