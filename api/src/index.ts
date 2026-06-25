@@ -7,7 +7,7 @@ import taskRoutes from './routes/tasks.js';
 import { errorMiddleware } from './middlewares/error.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:8081';
 
 // Middlewares

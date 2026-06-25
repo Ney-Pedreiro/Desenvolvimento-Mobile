@@ -4,10 +4,11 @@
   "description": "ClimateTech API - Authentication Service",
   "main": "dist/index.js",
   "type": "module",
-"scripts": {
+  "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "prisma generate && tsc",
     "start": "node dist/index.js",
+    "prestart": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "migrate:deploy": "prisma migrate deploy",
     "deploy:prod": "npm run build && npx prisma migrate deploy",
@@ -22,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^12.11.1",
@@ -29,6 +31,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "pg": "^8.22.0",
     "prisma": "^7.8.0"
   },
   "devDependencies": {
