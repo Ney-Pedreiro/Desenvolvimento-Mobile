@@ -4,13 +4,13 @@
   "description": "ClimateTech API - Authentication Service",
   "main": "dist/index.js",
   "type": "module",
-  "scripts": {
+"scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "migrate:deploy": "prisma migrate deploy",
-    "deploy:prod": "npm run build && npx prisma generate && npx prisma migrate deploy",
+    "deploy:prod": "npm run build && npx prisma migrate deploy",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "db:reset": "prisma migrate reset --force",

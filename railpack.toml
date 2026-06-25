@@ -1,0 +1,5 @@
+[config]
+buildContext = "api"
+
+[deploy]
+startCommand = "node dist/index.js"
