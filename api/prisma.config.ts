@@ -8,7 +8,7 @@ const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".en
 dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
-const databaseUrl = process.env.DATABASE_URL ?? "postgresql://postgres:postgres@localhost:5432/clima_tech";
+const databaseUrl = process.env.DATABASE_URL ?? "file:./dev.db";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

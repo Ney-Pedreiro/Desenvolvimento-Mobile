@@ -7,7 +7,7 @@ generator client {
 
 // Datasource: configured via prisma.config.ts
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model User {
